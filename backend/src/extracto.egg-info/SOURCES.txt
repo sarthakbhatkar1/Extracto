@@ -1,0 +1,10 @@
+pyproject.toml
+src/extracto/__init__.py
+src/extracto/main.py
+src/extracto.egg-info/PKG-INFO
+src/extracto.egg-info/SOURCES.txt
+src/extracto.egg-info/dependency_links.txt
+src/extracto.egg-info/top_level.txt
+src/extracto/api/__init__.py
+src/extracto/db/__init__.py
+src/extracto/services/__init__.py
