@@ -1,7 +1,0 @@
-Metadata-Version: 2.4
-Name: extracto
-Version: 0.0.1
-Summary: Extracto: LLM-Powered Document Analysis Platform
-Author-email: Sarthak <sarthak.bhatkar.21@gmail.com>
-Requires-Python: >=3.9
-Description-Content-Type: text/markdown

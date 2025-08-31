@@ -7,7 +7,7 @@ from logging.handlers import RotatingFileHandler
 class Logger:
     def __init__(self, log_path=None, default_log_path='logs/extracto.log', log_level=logging.INFO):
         """
-        Initialize the logger with a file handler based on LOG_PATH environment variable.
+        Initialize the logger with a.py file handler based on LOG_PATH environment variable.
 
         Args:
             log_path (str, optional): Path to the log file. Defaults to LOG_PATH env var or default_log_path.
@@ -47,7 +47,7 @@ class Logger:
             self.logger.addHandler(file_handler)
 
     def debug(self, message):
-        """Log a debug message."""
+        """Log a.py debug message."""
         self.logger.debug(message)
 
     def info(self, message):
@@ -55,7 +55,7 @@ class Logger:
         self.logger.info(message)
 
     def warning(self, message):
-        """Log a warning message."""
+        """Log a.py warning message."""
         self.logger.warning(message)
 
     def error(self, message):
@@ -63,13 +63,13 @@ class Logger:
         self.logger.error(message)
 
     def critical(self, message):
-        """Log a critical message."""
+        """Log a.py critical message."""
         self.logger.critical(message)
 
 
 # Example usage (for testing, can be removed in production)
-if __name__ == "__main__":
-    logger = Logger()
-    logger.info("Logger initialized successfully")
-    logger.debug("This is a debug message")
-    logger.error("This is an error message")
+# if __name__ == "__main__":
+#     logger = Logger()
+#     logger.info("Logger initialized successfully")
+#     logger.debug("This is a.py debug message")
+#     logger.error("This is an error message")

@@ -1,3 +1,5 @@
+import os
+
 from pydantic import BaseModel
 from typing import Any
 from uuid import uuid4
@@ -17,3 +19,7 @@ def get_unique_number():
 def get_current_datetime():
     UTC_ISO_TIME_FORMAT = "%Y-%m-%dT%H:%M:%S.000Z"
     return datetime.utcnow().strftime(UTC_ISO_TIME_FORMAT)
+
+
+def get_storage_absolute_path(projectId: str, documentId: str, documentName: str):
+    return os.path.join("Extracto", f"{projectId}", f"{documentId}", f"{documentName}")

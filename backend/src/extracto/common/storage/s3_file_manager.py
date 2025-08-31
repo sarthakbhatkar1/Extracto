@@ -2,7 +2,11 @@ import boto3
 from botocore.exceptions import ClientError
 from extracto.common.config.config_store import ConfigStore
 import os
-from pathlib import Path
+import io
+
+
+os.environ['ENV'] = 'PREDEV'
+os.environ['CONF_PATH'] = r'D:\Projects\career\Extracto\backend\resource'
 
 
 class S3FileManager:
@@ -17,10 +21,10 @@ class S3FileManager:
         self.config = config_store or ConfigStore()
 
         # Get AWS credentials (prefer environment variables over config file)
-        self.access_key_id = os.getenv('AWS_ACCESS_KEY_ID', self.config.AWS.ACCESS_KEY_ID)
-        self.secret_access_key = os.getenv('AWS_SECRET_ACCESS_KEY', self.config.AWS.SECRET_ACCESS_KEY)
-        self.region = os.getenv('AWS_REGION', self.config.AWS.REGION)
-        self.bucket = os.getenv('S3_BUCKET', self.config.AWS.S3_BUCKET)
+        self.access_key_id = os.getenv('AWS_ACCESS_KEY_ID', self.config.AWS.AWS_ACCESS_KEY_ID)
+        self.secret_access_key = os.getenv('AWS_SECRET_ACCESS_KEY', self.config.AWS.AWS_SECRET_ACCESS_KEY)
+        self.region = os.getenv('AWS_S3_REGION', self.config.AWS_S3.AWS_S3_REGION)
+        self.bucket = os.getenv('AWS_S3_BUCKET', self.config.AWS_S3.AWS_S3_BUCKET)
 
         # Initialize S3 client
         self.s3_client = boto3.client(
@@ -39,53 +43,61 @@ class S3FileManager:
                 }
             )
         except ClientError as e:
+            error_message = f"{e}"
+            print(f"Exception in uploading the document in AWS S3 bucket: {e}")
             if e.response['Error']['Code'] != 'AccessDenied':
-                raise Exception(f"Failed to enable encryption on bucket {self.bucket}: {str(e)}")
+                error_message = f"Failed to enable encryption on bucket {self.bucket}: {str(e)}"
+            raise Exception(f"{error_message}")
 
-    def create(self, local_path, remote_path=None):
+    def create(self, file_data, remote_path):
         """
-        Upload a file to S3 (Create).
+        Upload file data to S3 (Create).
 
         Args:
-            local_path (str): Path to the local file to upload.
-            remote_path (str, optional): Destination key in S3 (e.g., 'Extracto/documents/sample.pdf').
-                                        Defaults to file name.
+            file_data (bytes or str): The content of the file to upload (e.g., bytes for binary, str for text).
+            remote_path (str): Destination key in S3 (e.g., 'Extracto/documents/sample.pdf').
 
         Returns:
             dict: Details of the uploaded file (e.g., bucket, key).
 
         Raises:
-            FileNotFoundError: If local_path doesn't exist.
+            ValueError: If file_data or remote_path is empty or invalid.
             ClientError: For S3 API errors (e.g., permissions, bucket not found).
         """
-        local_path = Path(local_path)
-        if not local_path.exists():
-            raise FileNotFoundError(f"Local file {local_path} not found")
+        if not file_data:
+            raise ValueError("file_data cannot be empty")
+        if not remote_path:
+            raise ValueError("remote_path must be provided")
 
-        remote_path = remote_path or local_path.name
+        # Convert string to bytes if necessary
+        if isinstance(file_data, str):
+            file_data = file_data.encode('utf-8')
+
+        # Create a.py file-like object from bytes
+        file_obj = io.BytesIO(file_data)
 
         try:
-            self.s3_client.upload_file(
-                Filename=str(local_path),
+            self.s3_client.upload_fileobj(
+                Fileobj=file_obj,
                 Bucket=self.bucket,
                 Key=remote_path,
                 ExtraArgs={'ServerSideEncryption': 'AES256'}
             )
             return {"bucket": self.bucket, "key": remote_path}
         except ClientError as e:
-            raise Exception(f"Failed to upload {local_path} to S3 bucket {self.bucket}: {str(e)}")
+            raise Exception(f"Failed to upload data to S3 bucket {self.bucket} at {remote_path}: {str(e)}")
 
     def read(self, remote_path=None):
         """
-        List files or download a file from S3 (Read).
+        List files or download a.py file from S3 (Read).
 
         Args:
             remote_path (str, optional): S3 key to download or folder prefix to list (e.g., 'Extracto/').
                                         If None, lists all files in bucket.
 
         Returns:
-            list or bytes: List of file keys if remote_path is a prefix or None,
-                          or file content if remote_path is a file.
+            list or bytes: List of file keys if remote_path is a.py prefix or None,
+                          or file content if remote_path is a.py file.
 
         Raises:
             ClientError: For S3 API errors (e.g., file not found, permissions).
@@ -98,7 +110,7 @@ class S3FileManager:
                     return response['Body'].read()
                 except ClientError as e:
                     if e.response['Error']['Code'] == 'NoSuchKey':
-                        # Treat as a folder prefix and list objects
+                        # Treat as a.py folder prefix and list objects
                         response = self.s3_client.list_objects_v2(
                             Bucket=self.bucket,
                             Prefix=remote_path.rstrip('/')
@@ -114,7 +126,7 @@ class S3FileManager:
 
     def update(self, remote_path, new_name=None, new_path=None):
         """
-        Rename or move a file in S3 (Update) by copying and deleting.
+        Rename or move a.py file in S3 (Update) by copying and deleting.
 
         Args:
             remote_path (str): Current S3 key of the file (e.g., 'Extracto/documents/sample.pdf').
@@ -158,7 +170,7 @@ class S3FileManager:
 
     def delete(self, remote_path):
         """
-        Delete a file from S3 (Delete).
+        Delete a.py file from S3 (Delete).
 
         Args:
             remote_path (str): S3 key of the file to delete (e.g., 'Extracto/documents/sample.pdf').
@@ -180,21 +192,20 @@ class S3FileManager:
 if __name__ == "__main__":
     manager = S3FileManager()
 
-    # Create: Upload a file
-    with open("test.txt", "w") as f:
-        f.write("Test content")
-    manager.create("test.txt", "Extracto/test.txt")
+    # Create: Upload file data
+    file_content = b"Test content"  # Example bytes data
+    manager.create(file_content, "extracto/test.txt")
 
     # Read: List files in Extracto folder
-    files = manager.read("Extracto/")
+    files = manager.read(remote_path="extracto/")
     print("Files in Extracto:", files)
 
-    # Read: Download a file
-    content = manager.read("Extracto/test.txt")
+    # Read: Download a.py file
+    content = manager.read("extracto/test.txt")
     print("File content:", content.decode())
 
-    # Update: Rename a file
-    manager.update("Extracto/test.txt", new_name="test_updated.txt")
+    # Update: Rename a.py file
+    manager.update("extracto/test.txt", new_name="test_updated.txt")
 
-    # Delete: Remove a file
-    manager.delete("Extracto/test_updated.txt")
+    # Delete: Remove a.py file
+    # manager.delete("extracto/test_updated.txt")

@@ -1,10 +1,10 @@
 import logging
 from typing import List
 
-from extracto.db.base import DBConnection
-from extracto.schema.project_schema import ProjectWorkflow
+from extracto.db.azure.base import DBConnection
+from extracto.schema.objects import ProjectWorkflow
 from extracto.db.model import Project
-from extracto.utils.response_model import ProjectResponse
+from extracto.schema.response import ProjectResponse
 from extracto.utils.util import get_unique_number, get_current_datetime
 
 logger = logging.getLogger(__name__)

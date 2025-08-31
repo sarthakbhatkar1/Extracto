@@ -1,10 +1,9 @@
 from fastapi import APIRouter, UploadFile, File, Form
 from typing import List
 
-from extracto.schema.project_schema import ProjectWorkflow
 from extracto.services.project_service import ProjectService
+from extracto.schema.objects import ProjectRequestSchema
 from extracto.utils.util import JsonResponse
-from extracto.schema.project_schema import ProjectRequestSchema
 
 project_api = APIRouter(tags=["Project Management APIs"])
 

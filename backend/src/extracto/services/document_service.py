@@ -2,13 +2,11 @@ import logging
 
 from fastapi import UploadFile
 
-from extracto.common.config.config_store import ConfigStore
-from extracto.db.base import DBConnection
-from extracto.storage.blob_client import BlobStorageClient, setup_blob_resource
-from extracto.storage.istorage_client import StorageObjectType
-from extracto.storage.storage_config import BlobLocation
+from extracto.db.azure.base import DBConnection
+from extracto.common.storage.s3_file_manager import S3FileManager
+from extracto.common.storage.schema import S3Location
 from extracto.db.model import Document
-from extracto.utils.response_model import DocumentResponse
+from extracto.schema.response import DocumentResponse
 from extracto.utils.util import get_storage_absolute_path
 from extracto.utils.util import get_unique_number, get_current_datetime
 
@@ -42,32 +40,19 @@ class DocumentService:
     async def create(self, projectId: str,  documentFile: UploadFile, documentType: str, folderName: str):
         response = None
         documentId = get_unique_number()
-        blob_config = BlobConfig()
-        container_name = blob_config.BLOB_CONTAINER_NAME
         session = DBConnection().get_session()
-        blob_client: BlobStorageClient = setup_blob_resource()
+        file_manager = S3FileManager()
         try:
-            blob_absolute_path = get_storage_absolute_path(projectId=projectId, documentId=documentId, documentName=documentFile.filename)
-
-            blob_storage_path = BlobLocation(container_name=container_name, absolute_path=blob_absolute_path)
-
-            storage_obj = blob_client.save_file(
-                file_data=documentFile.file.read(),
-                storage_location=blob_storage_path,
-                object_type=StorageObjectType.binary.value
-            )
-
-            if storage_obj.code != 0:
-                logger.error(f"Failed to save the file to blob storage")
-                raise Exception(f"Failed to save the file to blob storage")
-
+            file_data = documentFile.file.read()
+            doc_storage_path = get_storage_absolute_path(projectId=projectId, documentId=documentId, documentName=documentFile.filename)
+            file_manager.create(file_data=file_data, remote_path=doc_storage_path)
             document: Document = Document(
                 ID=documentId,
                 NAME=documentFile.filename,
                 TYPE=documentType,
                 PROJECT_ID=projectId,
                 FOLDER_NAME=folderName,
-                STORAGE_PATH=blob_storage_path.dict(),
+                STORAGE_PATH=S3Location(absolute_path=doc_storage_path).dict(),
                 CREATED_TS=self.created_ts,
                 MODIFIED_TS=self.modified_ts
             )
@@ -97,21 +82,19 @@ class DocumentService:
         return response
 
     async def download(self, documentId: str):
-        document_bytes = None
         session = DBConnection().get_session()
-        blob_client = setup_blob_resource()
+        file_manager = S3FileManager()
         try:
-            document = session.query(Document).filter(Document.ID==documentId).first()
-            storage_path = document.STORAGE_PATH
-            if storage_path:
-                document_bytes = blob_client.load_file(storage_location=storage_path)
+            document = session.query(Document).filter(Document.ID == documentId).first()
+            storage_path = S3Location(**document.STORAGE_PATH).absolute_path
+            document_bytes = file_manager.read(remote_path=storage_path)
+            return document_bytes, document.NAME
         except Exception as e:
             print(f"Exception in listing documents: {e}")
             raise Exception(f"Exception in listing documents: {e}")
         finally:
             session.commit()
             session.close()
-        return document_bytes
 
     def response(self, document: Document):
         return DocumentResponse(

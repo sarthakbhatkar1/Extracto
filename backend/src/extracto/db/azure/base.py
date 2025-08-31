@@ -2,7 +2,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.exc import SQLAlchemyError
 
-from extracto.common.config import ConfigStore
+from extracto.common.config.config_store import ConfigStore
 
 
 class DBConnection:
@@ -22,7 +22,7 @@ class DBConnection:
         db_config = ConfigStore().__getattr__("DB")
         self.db_type = db_config.DB_DRIVER_NAME
         self.username = db_config.DB_USERNAME
-        self.password = db_config.DB_PWD
+        self.password = db_config.DB_PASSWORD
         self.host = db_config.DB_HOST
         self.port = db_config.DB_PORT
         self.database = db_config.DB_DATABASE
@@ -60,7 +60,7 @@ class DBConnection:
 
     def get_session(self):
         """
-        Get a new session from the sessionmaker.
+        Get a.py new session from the sessionmaker.
 
         :return: A SQLAlchemy session.
         """
@@ -93,7 +93,7 @@ class DBConnection:
 #     db_connection = DBConnection()
 #     db_connection.connect()
 #
-#     # Get a session and perform database operations
+#     # Get a.py session and perform database operations
 #     session = db_connection.get_session()
 #     import  pdb; pdb.set_trace()
 #
