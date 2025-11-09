@@ -1,0 +1,87 @@
+Metadata-Version: 2.1
+Name: greek
+Version: 0.1.0
+Project-URL: Home, https://github.com/lordmauve/greek
+Project-URL: Issues, https://github.com/lordmauve/greek/issues
+Author-email: Daniel Pope <mauve@mauveweb.co.uk>
+License: The MIT License (MIT)
+        
+        Copyright (c) 2023 Daniel Pope
+        
+        Permission is hereby granted, free of charge, to any person obtaining a copy
+        of this software and associated documentation files (the "Software"), to deal
+        in the Software without restriction, including without limitation the rights
+        to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+        copies of the Software, and to permit persons to whom the Software is
+        furnished to do so, subject to the following conditions:
+        
+        The above copyright notice and this permission notice shall be included in
+        all copies or substantial portions of the Software.
+        
+        THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+        IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+        FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+        AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+        LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+        OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+        THE SOFTWARE.
+License-File: LICENSE
+Classifier: Development Status :: 4 - Beta
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3
+Requires-Python: >=3.0
+Description-Content-Type: text/markdown
+
+# Mathematical Greek for Python
+
+Why write `pi` when you could write `π`?
+
+This package provides - and monkey patches - Greek aliases for builtins and
+standard library functions.
+
+
+## Usage
+
+Either import the Greek aliases from the `greek` module:
+
+```python
+from greek import π
+```
+
+Or just `import greek` first and use the aliases from the standard library:
+
+```python
+import greek
+from math import π
+```
+
+But what if the taste of importing an English name like `greek` doesn't sit
+right with you? We got you:
+
+```python
+import ελληνικά
+from math import τ
+```
+
+```python
+from ελληνικά import Π
+```
+
+
+## List of aliases
+
+| Original           | Greek |
+| ---                | ---   |
+| `sum`              | `Σ`   |
+| `sum`              | `𝚺`   |
+| `int`              | `ℤ`   |
+| `complex`          | `ℂ`   |
+| `math.pi`          | `π`   |
+| `math.pi`          | `𝜋`   |
+| `math.tau`         | `τ`   |
+| `math.tau`         | `𝜏`   |
+| `math.e`           | `𝑒`   |
+| `math.prod`        | `Π`   |
+| `math.gamma`       | `Γ`   |
+| `statistics.stdev` | `σ`   |
