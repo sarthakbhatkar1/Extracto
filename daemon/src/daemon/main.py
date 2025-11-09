@@ -1,9 +1,9 @@
 import time
 
 from daemon.common.config.config_store import ConfigStore
-from daemon.logger.log_utils import Logger
 from daemon.db.azure.base import DBConnection
 from daemon.db.model import Task
+from daemon.logger.log_utils import Logger
 from daemon.utils.util import TaskStatumEnum
 
 
