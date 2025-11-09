@@ -1,9 +1,15 @@
 import os
-
-from pydantic import BaseModel
+from datetime import datetime
+from enum import Enum
 from typing import Any
 from uuid import uuid4
-from datetime import datetime
+
+from pydantic import BaseModel
+
+
+class RoleEnum(str, Enum):
+    ADMIN = "Admin"
+    USER = "User"
 
 
 class JsonResponse(BaseModel):

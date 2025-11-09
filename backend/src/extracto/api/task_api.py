@@ -1,9 +1,12 @@
 import logging
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 
 from extracto.services.task_service import TaskService
 from extracto.utils.util import JsonResponse
 from extracto.schema.objects import TaskRequestSchema
+from extracto.db.model import User
+from extracto.utils.user_dependancy import get_current_user
+
 
 task_api = APIRouter(tags=["Task Management APIs"])
 
@@ -11,10 +14,10 @@ logger = logging.getLogger(__name__)
 
 
 @task_api.get("")
-async def list():
+async def list(user: User = Depends(get_current_user)):
     json_response = JsonResponse()
     try:
-        response = TaskService().list()
+        response = TaskService(user=user).list()
         json_response.result = response
         json_response.success = True
     except Exception as e:
@@ -23,10 +26,10 @@ async def list():
 
 
 @task_api.post("")
-async def create(taskRequestSchema: TaskRequestSchema):
+async def create(taskRequestSchema: TaskRequestSchema, user: User = Depends(get_current_user)):
     json_response = JsonResponse()
     try:
-        response = TaskService().create(
+        response = TaskService(user=user).create(
             taskRequestSchema=taskRequestSchema
         )
         print(f"Successfully uploaded task.")
@@ -38,10 +41,10 @@ async def create(taskRequestSchema: TaskRequestSchema):
 
 
 @task_api.get("/{taskId}")
-async def get(taskId: str):
+async def get(taskId: str, user: User = Depends(get_current_user)):
     json_response = JsonResponse()
     try:
-        response = TaskService().get(taskId=taskId)
+        response = TaskService(user=user).get(taskId=taskId)
         print(f"Successfully retrieved the task with taskId: {taskId}.")
         json_response.result = response
         json_response.success = True

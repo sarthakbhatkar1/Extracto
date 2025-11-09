@@ -1,18 +1,31 @@
-from fastapi import APIRouter, UploadFile, File, Form
-from typing import List
+from fastapi import APIRouter, Depends
 
-from extracto.services.project_service import ProjectService
+from extracto.db.model import User
 from extracto.schema.objects import ProjectRequestSchema
+from extracto.services.project_service import ProjectService
+from extracto.utils.user_dependancy import get_current_user
 from extracto.utils.util import JsonResponse
 
 project_api = APIRouter(tags=["Project Management APIs"])
 
 
 @project_api.get("")
-async def list():
+async def list(user: User = Depends(get_current_user)):
     json_response = JsonResponse()
     try:
-        response = await ProjectService().list()
+        response = await ProjectService(user=user).list()
+        json_response.result = response
+        json_response.success = True
+    except Exception as e:
+        json_response.error = {"code": "101", "message": f"Error in listing of projects: {e}"}
+    return json_response.dict()
+
+
+@project_api.get("/{projectId}/documents")
+async def list_by_project(projectId: str, user: User = Depends(get_current_user)):
+    json_response = JsonResponse()
+    try:
+        response = await ProjectService(user=user).list_based_on_project(projectId=projectId)
         json_response.result = response
         json_response.success = True
     except Exception as e:
@@ -21,10 +34,10 @@ async def list():
 
 
 @project_api.post("")
-async def create(projectRequestSchema: ProjectRequestSchema):
+async def create(projectRequestSchema: ProjectRequestSchema, user: User = Depends(get_current_user)):
     json_response = JsonResponse()
     try:
-        response = await ProjectService().create(
+        response = await ProjectService(user=user).create(
             projectName=projectRequestSchema.projectName,
             tags=projectRequestSchema.tags,
             description=projectRequestSchema.description,
@@ -39,11 +52,11 @@ async def create(projectRequestSchema: ProjectRequestSchema):
 
 
 @project_api.get("/{project_id}")
-async def get(project_id: str):
+async def get(projectId: str, user: User = Depends(get_current_user)):
     json_response = JsonResponse()
     try:
-        response = await ProjectService().get(project_id=project_id)
-        print(f"Successfully retrieved the project with project_id: {project_id}.")
+        response = await ProjectService(user=user).get(projectId=projectId)
+        print(f"Successfully retrieved the project with projectId: {projectId}.")
         json_response.result = response
         json_response.success = True
     except Exception as e:
@@ -52,17 +65,17 @@ async def get(project_id: str):
 
 
 @project_api.post("/{project_id}")
-async def update(project_id: str, projectRequestSchema: ProjectRequestSchema):
+async def update(projectId: str, projectRequestSchema: ProjectRequestSchema, user: User = Depends(get_current_user)):
     json_response = JsonResponse()
     try:
-        response = await ProjectService().update(
-            project_id=project_id,
+        response = await ProjectService(user=user).update(
+            projectId=projectId,
             projectName=projectRequestSchema.projectName,
             tags=projectRequestSchema.tags,
             description=projectRequestSchema.description,
             workflow=projectRequestSchema.workflow
         )
-        print(f"Successfully retrieved the project with project_id: {project_id}.")
+        print(f"Successfully retrieved the project with project_id: {projectId}.")
         json_response.result = response
         json_response.success = True
     except Exception as e:
@@ -71,11 +84,11 @@ async def update(project_id: str, projectRequestSchema: ProjectRequestSchema):
 
 
 @project_api.post("/{project_id}/delete")
-async def delete(project_id: str):
+async def delete(projectId: str, user: User = Depends(get_current_user)):
     json_response = JsonResponse()
     try:
-        response = await ProjectService().delete(project_id=project_id)
-        print(f"Successfully retrieved the project with project_id: {project_id}.")
+        response = await ProjectService(user=user).delete(projectId=projectId)
+        print(f"Successfully retrieved the project with projectId: {projectId}.")
         json_response.result = response
         json_response.success = True
     except Exception as e:

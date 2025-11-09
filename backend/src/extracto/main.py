@@ -5,13 +5,15 @@ from fastapi.middleware.cors import CORSMiddleware
 from extracto.api.document_api import document_api
 from extracto.api.project_api import project_api
 from extracto.api.task_api import task_api
+from extracto.api.user_api import user_api
+from extracto.api.auth_api import auth_api
 
 
 base_url = "/extracto"
 
 app = FastAPI(
     openapi_url="/swagger/openapi.json",
-    docs_url= base_url + "/swagger",
+    docs_url=base_url + "/swagger",
     title="Document Processing Application",
     description="",
     version="0.0.1"
@@ -41,6 +43,8 @@ def shutdown():
     return 0
 
 
+app.include_router(auth_api, prefix="/api/v1/auth")
+app.include_router(user_api, prefix="/api/v1/user")
 app.include_router(document_api, prefix="/api/v1/document")
 app.include_router(project_api, prefix="/api/v1/project")
 app.include_router(task_api, prefix="/api/v1/task")

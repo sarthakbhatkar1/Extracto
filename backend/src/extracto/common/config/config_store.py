@@ -37,6 +37,8 @@ class ConfigStore:
 
 # Example usage (for testing purposes, can be removed in production)
 if __name__ == "__main__":
+    print(f"os.getenv('') - {os.getenv('CONF_PATH')}")
+    os.environ["CONF_PATH"] = r"D:\Projects\career\Extracto\backend\resource"
     config = ConfigStore()
     print(config.APP.ENV)
     print(config.APP.NAME)
