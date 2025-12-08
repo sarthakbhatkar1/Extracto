@@ -5,7 +5,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.exc import SQLAlchemyError
 
-from extracto.common.config.config_store import ConfigStore
+from daemon.common.config.config_store import ConfigStore
 
 # os.environ['ENV'] = "PREDEV"
 # os.environ['CONF_PATH'] = r"D:\Projects\career\Extracto\backend\resource"

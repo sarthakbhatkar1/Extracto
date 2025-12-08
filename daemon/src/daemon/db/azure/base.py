@@ -2,7 +2,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.exc import SQLAlchemyError
 
-from extracto.common.config.config_store import ConfigStore
+from daemon.common.config.config_store import ConfigStore
 
 
 class DBConnection:
@@ -87,7 +87,7 @@ class DBConnection:
 #         "port": 6432,
 #         "database": "private-markets",
 #     }
-#     from extracto.db.model import Document
+#     from daemon.db.model import Document
 #
 #     db_connection = DBConnection()
 #     db_connection.connect()

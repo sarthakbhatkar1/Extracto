@@ -3,8 +3,8 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.exc import SQLAlchemyError
 import urllib.parse
 
-from extracto.common.config.config_store import ConfigStore
-from extracto.logger.log_utils import Logger
+from daemon.common.config.config_store import ConfigStore
+from daemon.logger.log_utils import Logger
 
 logger = Logger()
 
@@ -109,7 +109,7 @@ class DBConnection:
 #     #     "port": 6543,  # Use transaction mode
 #     #     "database": "postgres",
 #     # }
-#     from extracto.db.model import Document
+#     from daemon.db.model import Document
 #
 #     # Initialize with SSL and timeout
 #     conn_str = "postgresql://postgres:Vandana30Sarth@db.cvxnivhbhmsaoulcjjzf.supabase.co:5432/postgres"

@@ -1,6 +1,6 @@
 import boto3
 from botocore.exceptions import ClientError
-from extracto.common.config.config_store import ConfigStore
+from daemon.common.config.config_store import ConfigStore
 import os
 import io
 

@@ -5,7 +5,7 @@ from logging.handlers import RotatingFileHandler
 
 
 class Logger:
-    def __init__(self, log_path=None, default_log_path='logs/extracto.log', log_level=logging.INFO):
+    def __init__(self, log_path=None, default_log_path='logs/daemon.log', log_level=logging.INFO):
         """
         Initialize the logger with a.py file handler based on LOG_PATH environment variable.
 

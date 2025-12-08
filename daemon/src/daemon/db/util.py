@@ -1,4 +1,4 @@
-from extracto.common.config.config_store import ConfigStore
+from daemon.common.config.config_store import ConfigStore
 
 
 def get_db_schema():
