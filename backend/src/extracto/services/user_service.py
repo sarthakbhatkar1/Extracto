@@ -20,7 +20,7 @@ class UserService:
         session = DBConnection().get_session()
         try:
             logger.info(f"Fetching the documents from the database.")
-            users: [User] = session.query(User).all()
+            users: list[User] = session.query(User).all()
             logger.info(f"Successfully fetched the documents from the database.")
             for user in users:
                 response.append(self.response(user=user))

@@ -17,13 +17,13 @@ document_api = APIRouter(tags=["Document Processing APIs"])
 async def list_of_documents(projectId: str = None, user: User = Depends(get_current_user)):
     json_response = JsonResponse()
     try:
-        print("Starting to list down the documents...")
+        logger.info("Starting to list down the documents...")
         response = await DocumentService(user=user).list_based_on_project(projectId=projectId)
         json_response.result = response
         json_response.success = True
     except Exception as e:
         json_response.error = {"code": "101", "message": f"Error in listing of documents: {e}"}
-        print(f'Exception in listing of documents: {e}')
+        logger.error(f'Exception in listing of documents: {e}')
     return json_response.dict()
 
 
@@ -44,12 +44,12 @@ async def upload_document(
             projectId=projectId, folderName=folderName,
             documentType=documentType, documentFile=document
         )
-        print(f"Successfully uploaded document.")
+        logger.info(f"Successfully uploaded document.")
         json_response.result = response
         json_response.success = True
     except Exception as e:
         json_response.error = {"code": "102", "message": f"Error in uploading of document: {e}"}
-        print(f'Exception in uploading document: {e}')
+        logger.error(f'Exception in uploading document: {e}')
     return json_response.dict()
 
 
@@ -58,12 +58,12 @@ async def get_document(documentId: str, user: User = Depends(get_current_user)):
     json_response = JsonResponse()
     try:
         response = await DocumentService(user=user).get(documentId=documentId)
-        print(f"Successfully retrieved the document with documentId: {documentId}.")
+        logger.info(f"Successfully retrieved the document with documentId: {documentId}.")
         json_response.result = response
         json_response.success = True
     except Exception as e:
         json_response.error = {"code": "103", "message": f"Error in fetching the details of the document: {e}"}
-        print(f'Exception in fetching the document: {e}')
+        logger.error(f'Exception in fetching the document: {e}')
     return json_response.dict()
 
 
@@ -72,7 +72,7 @@ async def download_document(documentId: str, user: User = Depends(get_current_us
     json_response = JsonResponse()
     try:
         response, filename = await DocumentService(user=user).download(documentId=documentId)
-        print(f"Successfully retrieved the document with documentId: {documentId}.")
+        logger.info(f"Successfully retrieved the document with documentId: {documentId}.")
         json_response.result = response
         json_response.success = True
     except Exception as e:

@@ -3,7 +3,9 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.exc import SQLAlchemyError
 
 from extracto.common.config.config_store import ConfigStore
+from extracto.logger.log_utils import Logger
 
+logger = Logger()
 
 class DBConnection:
     def __init__(self, **kwargs):
@@ -29,8 +31,9 @@ class DBConnection:
         self.kwargs = kwargs
 
         self.connection_string = (
-                f"{self.db_type}://{self.username}:{self.password}@{self.host}:{self.port}/{self.database}"
+                f"{self.db_type}://{self.username}:{self.password}@{self.host}:{self.port}/{self.database}?sslmode=disable"
             )
+        print(f"self.connection_string: {self.connection_string}")
         self.engine = None
         self.Session = None
 
@@ -40,17 +43,17 @@ class DBConnection:
         """
         try:
 
-            # Add additional parameters to the connection string
             if self.kwargs:
                 params = "&".join(f"{key}={value}" for key, value in self.kwargs.items())
                 self.connection_string += f"?{params}"
 
-            # self.engine = create_engine(connection_string)
+            print(f"self.connection_string: {self.connection_string}")
+
             self.engine = self._create_engine()
             self.Session = sessionmaker(bind=self.engine)
-            print("Database connection established.")
+            logger.info("Database connection established.")
         except SQLAlchemyError as e:
-            print(f"Error connecting to the database: {e}")
+            logger.error(f"Error connecting to the database: {e}")
             raise
 
     def _create_engine(self):
@@ -74,7 +77,7 @@ class DBConnection:
         """
         if self.engine:
             self.engine.dispose()
-            print("Database connection closed.")
+            logger.info("Database connection closed.")
 
 
 # Usage Example
@@ -98,9 +101,9 @@ class DBConnection:
 #
 #     try:
 #         result = session.query(Document).all()
-#         print(f"result: {result}")
+#         logger.info(f"result: {result}")
 #     except Exception as e:
-#         print(f"Error during database operation: {e}")
+#         logger.error(f"Error during database operation: {e}")
 #     finally:
 #         session.close()
 #         db_connection.close_connection()

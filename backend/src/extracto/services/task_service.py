@@ -105,8 +105,6 @@ class TaskService:
         return response
 
     def response(self, task: Task):
-        print(f"task.CREATED_AT: {task.CREATED_AT}")
-        print(f"task.MODIFIED_AT: {task.MODIFIED_AT}")
         return TaskResponse(
             taskId=task.ID,
             status=task.STATUS,

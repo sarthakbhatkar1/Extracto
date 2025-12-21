@@ -10,8 +10,9 @@ from extracto.db.model import Document, Project, User
 from extracto.schema.response import DocumentResponse
 from extracto.utils.util import get_storage_absolute_path
 from extracto.utils.util import get_unique_number, get_current_datetime
+from extracto.logger.log_utils import Logger
 
-logger = logging.getLogger(__name__)
+logger = Logger()
 
 
 class DocumentService:
@@ -29,7 +30,7 @@ class DocumentService:
         session = DBConnection().get_session()
         response = []
         try:
-            print(f"Fetching documents for user {self.user.ID} with role {self.user.ROLE}...")
+            logger.info(f"Fetching documents for user {self.user.ID} with role {self.user.ROLE}...")
 
             # Check if user is admin
             if self.user.ROLE and self.user.ROLE.lower() == "admin":
@@ -69,11 +70,11 @@ class DocumentService:
 
                 response.append(project_entry)
 
-            print("Successfully fetched grouped documents.")
+            logger.info("Successfully fetched grouped documents.")
 
         except Exception as e:
             session.rollback()
-            print(f"Exception in listing documents: {e}")
+            logger.error(f"Exception in listing documents: {e}")
             raise Exception(f"Exception in listing documents: {e}")
         finally:
             session.commit()
@@ -124,7 +125,7 @@ class DocumentService:
         session = DBConnection().get_session()
         response = []
         try:
-            print(f"Fetching documents for user {self.user.ID} with role {self.user.ROLE}...")
+            logger.info(f"Fetching documents for user {self.user.ID} with role {self.user.ROLE}...")
 
             # Check if user is admin
             if self.user.ROLE and self.user.ROLE.lower() == "admin":
@@ -168,11 +169,11 @@ class DocumentService:
 
                 response.append(project_entry)
 
-            print("Successfully fetched grouped documents.")
+            logger.info("Successfully fetched grouped documents.")
 
         except Exception as e:
             session.rollback()
-            print(f"Exception in listing documents: {e}")
+            logger.error(f"Exception in listing documents: {e}")
             raise Exception(f"Exception in listing documents: {e}")
         finally:
             session.commit()
@@ -186,10 +187,12 @@ class DocumentService:
         try:
             document: Document = session.query(Document).filter(
                 Document.ID == documentId).first()
+            if not document:
+                raise Exception("Project not found.")
             response = self.response(document=document)
         except Exception as e:
-            print(f"Exception in listing documents: {e}")
-            raise Exception(f"Exception in listing documents: {e}")
+            logger.error(f"Exception in listing documents: {e}")
+            raise e
         finally:
             session.commit()
             session.close()
@@ -203,7 +206,7 @@ class DocumentService:
             document: Document = session.query(Document).filter(Document.ID==documentId).delete()
             response = self.response(document=document)
         except Exception as e:
-            print(f"Exception in deleting the document: {e}")
+            logger.error(f"Exception in deleting the document: {e}")
             raise Exception(f"Exception in deleting the document: {e}")
         finally:
             session.commit()
@@ -219,7 +222,7 @@ class DocumentService:
             document_bytes = file_manager.read(remote_path=storage_path)
             return document_bytes, document.NAME
         except Exception as e:
-            print(f"Exception in listing documents: {e}")
+            logger.error(f"Exception in listing documents: {e}")
             raise Exception(f"Exception in listing documents: {e}")
         finally:
             session.commit()

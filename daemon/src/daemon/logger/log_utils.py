@@ -16,7 +16,6 @@ class Logger:
         """
         # Determine log file path from environment variable or default
         self.log_path = os.getenv('LOG_PATH', default_log_path) if log_path is None else log_path
-        print("self.log_path: ", self.log_path)
 
         # Ensure the log directory exists
         log_dir = Path(self.log_path).parent

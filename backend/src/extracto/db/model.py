@@ -115,28 +115,15 @@ def setup_database(connection_string):
     return engine
 
 
-# Usage Example
+# # Usage Example
 # if __name__ == "__main__":
-#     connection_string = "sqlite:///example.db"  # Example with SQLite; replace with your DB URI
-#     engine = setup_database(connection_string)
-#
-#     # Create a.py session
-#     Session = sessionmaker(bind=engine)
-#     session = Session()
-#
-#     # db_connection = DBConnection(**db_config)
-#
+#     # To re-create database
+#     os.getenv('CONF_PATH', r"D:\Projects\career\Extracto\backend\resource")
+#     os.getenv('ENV', "PREDEV")
+
+#     db_connection = DBConnection()
+#     engine = db_connection._create_engine()
+#     Base.metadata.drop_all(engine)
 #     Base.metadata.create_all(engine)
-
-# Usage Example
-if __name__ == "__main__":
-    # To re-create database
-    os.getenv('CONF_PATH', r"D:\Projects\career\Extracto\backend\resource")
-    os.getenv('ENV', "PREDEV")
-
-    db_connection = DBConnection()
-    engine = db_connection._create_engine()
-    Base.metadata.drop_all(engine)
-    Base.metadata.create_all(engine)
-    print(f"Database created successfully.")
-    pass
+#     print(f"Database created successfully.")
+#     pass

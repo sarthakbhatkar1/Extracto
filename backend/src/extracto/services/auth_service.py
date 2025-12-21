@@ -23,8 +23,8 @@ class AuthService:
             key=self.cookie_name,
             value=refresh_token,
             httponly=True,
-            secure=True,              # ✅ Secure in prod
-            samesite="Strict",        # or "Lax"
+            secure=True,
+            samesite="Strict",
             path="/auth",
             max_age=auth_utils.REFRESH_TOKEN_EXPIRE_DAYS * 24 * 3600,
         )

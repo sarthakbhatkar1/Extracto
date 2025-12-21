@@ -45,7 +45,7 @@ class ProjectService:
         session = DBConnection().get_session()
         response = {}
         try:
-            print(f"Fetching documents for user {self.user.ID} with role {self.user.ROLE}...")
+            logger.info(f"Fetching documents for user {self.user.ID} with role {self.user.ROLE}...")
 
             # Check if user is admin
             if self.user.ROLE and self.user.ROLE.lower() == "admin":
@@ -89,11 +89,11 @@ class ProjectService:
 
                 response = project_entry
 
-            print("Successfully fetched grouped documents.")
+            logger.info("Successfully fetched grouped documents.")
 
         except Exception as e:
             session.rollback()
-            print(f"Exception in listing documents: {e}")
+            logger.error(f"Exception in listing documents: {e}")
             raise Exception(f"Exception in listing documents: {e}")
         finally:
             session.commit()
