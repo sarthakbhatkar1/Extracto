@@ -1,8 +1,0 @@
-pyproject.toml
-requirements.txt
-setup.py
-src/daemon.egg-info/PKG-INFO
-src/daemon.egg-info/SOURCES.txt
-src/daemon.egg-info/dependency_links.txt
-src/daemon.egg-info/requires.txt
-src/daemon.egg-info/top_level.txt
