@@ -1,0 +1,86 @@
+from typing import Optional
+
+from fastapi import APIRouter, UploadFile, File, Form, Response, Depends
+
+from extracto.db.model import User
+from extracto.logger.log_utils import Logger
+from extracto.services.workflow_service import WorkflowService
+from extracto.utils.user_dependancy import get_current_user
+from extracto.utils.util import JsonResponse
+
+logger = Logger()
+
+workflow_api = APIRouter(tags=["Document Processing APIs"])
+
+
+@workflow_api.get("")
+async def list_of_workflows(projectId: str = None, user: User = Depends(get_current_user)):
+    json_response = JsonResponse()
+    try:
+        print("Starting to list down the workflows...")
+        response = await WorkflowService(user=user).list()
+        json_response.result = response
+        json_response.success = True
+    except Exception as e:
+        json_response.error = {"code": "101", "message": f"Error in listing of workflows: {e}"}
+        print(f'Exception in listing of workflows: {e}')
+    return json_response.dict()
+
+
+@workflow_api.post("")
+async def create(
+        workflowName: str = Form(...),
+        documentType: str = Form(...),
+        document: UploadFile = File(...),
+        documentName: Optional[str] = Form(None),
+        user: User = Depends(get_current_user)
+):
+    json_response = JsonResponse()
+    try:
+        if not documentName:
+            documentName = document.filename
+        response = await WorkflowService(user=user).create(
+            workflowName=workflowName, documentType=documentType, documentFile=document
+        )
+        print(f"Successfully uploaded document.")
+        json_response.result = response
+        json_response.success = True
+    except Exception as e:
+        json_response.error = {"code": "102", "message": f"Error in uploading of document: {e}"}
+        print(f'Exception in uploading document: {e}')
+    return json_response.dict()
+
+
+@workflow_api.get("/{workflowId}")
+async def get_workflow(workflowId: str, user: User = Depends(get_current_user)):
+    json_response = JsonResponse()
+    try:
+        response = await WorkflowService(user=user).get(workflowId=workflowId)
+        print(f"Successfully retrieved the document with workflowId: {workflowId}.")
+        json_response.result = response
+        json_response.success = True
+    except Exception as e:
+        json_response.error = {"code": "103", "message": f"Error in fetching the details of the workflow: {e}"}
+        print(f'Exception in fetching the document: {e}')
+    return json_response.dict()
+
+
+@workflow_api.get("/{workflowId}/download")
+async def download_document(workflowId: str, user: User = Depends(get_current_user)):
+    json_response = JsonResponse()
+    try:
+        response, filename = await WorkflowService(user=user).download(workflowId=workflowId)
+        print(f"Successfully retrieved the document with workflowId: {workflowId}.")
+        json_response.result = response
+        json_response.success = True
+    except Exception as e:
+        json_response.error = {"code": "103", "message": f"Error in fetching the details of the document: {e}"}
+        raise Exception(f'Exception in fetching the document: {e}')
+    headers = {
+        'Content-Disposition': f'attachment; filename="{filename}"'
+    }
+    return Response(
+        content=json_response.result,
+        media_type="application/octet_stream",
+        headers=headers
+    )

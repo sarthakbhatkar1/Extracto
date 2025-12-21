@@ -18,8 +18,7 @@ class DocumentService:
 
     def __init__(self, user: User):
         self.user = user
-        self.created_at = get_current_datetime()
-        self.modified_at = get_current_datetime()
+        self.timestamp = get_current_datetime()
 
     async def list(self):
         """
@@ -102,8 +101,8 @@ class DocumentService:
                 PROJECT_ID=projectId,
                 FOLDER_NAME=folderName,
                 STORAGE_PATH=S3Location(absolute_path=doc_storage_path).dict(),
-                CREATED_AT=self.created_at,
-                MODIFIED_AT=self.modified_at
+                CREATED_AT=self.timestamp,
+                MODIFIED_AT=self.timestamp
             )
             session.add(document)
             response = self.response(document=document)
@@ -123,7 +122,7 @@ class DocumentService:
         - Else → fetch only projects owned by the logged-in user.
         """
         session = DBConnection().get_session()
-        response = {}
+        response = []
         try:
             print(f"Fetching documents for user {self.user.ID} with role {self.user.ROLE}...")
 
@@ -167,7 +166,7 @@ class DocumentService:
                     } for fname, docs in project_entry["folders"].items()
                 ]
 
-                response = project_entry
+                response.append(project_entry)
 
             print("Successfully fetched grouped documents.")
 
