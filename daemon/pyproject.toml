@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "daemon"
+version = "0.0.1"
+authors = [
+    {name="Sarthak", email="sarthak.bhatkar.21@gmail.com"}
+]
+description = "Extracto: LLM-Powered Document Analysis Platform"
+
+readme = "README.md"
+requires-python = ">=3.9"
+
+dynamic = ["dependencies"]
+[tool.setuptools.dynamic]
+dependencies = {file = ["requirements.txt"]}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+namespaces = false
