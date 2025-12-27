@@ -2,7 +2,7 @@ from extracto.logger.log_utils import Logger
 from extracto.utils.util import get_unique_number
 from extracto.db.model import User
 from extracto.schema.response import UserResponse
-from extracto.db.supabase.base import DBConnection
+from extracto.db.azure.base import DBConnection
 from extracto.utils.util import get_current_datetime, RoleEnum
 
 logger = Logger()
@@ -20,7 +20,11 @@ class UserService:
         session = DBConnection().get_session()
         try:
             logger.info(f"Fetching the documents from the database.")
+            # users: list[User] = session.query(User).all()
+            from sqlalchemy import select
+
             users: list[User] = session.query(User).all()
+
             logger.info(f"Successfully fetched the documents from the database.")
             for user in users:
                 response.append(self.response(user=user))
@@ -110,10 +114,12 @@ class UserService:
     def response(self, user: User):
         return UserResponse(
             userId=user.ID,
-            userName=user.USERNAME,
-            name=user.NAME,
+            firstName=user.FIRST_NAME,
+            lastName=user.LAST_NAME,
             email=user.EMAIL,
             role=user.ROLE,
+            isActive=user.IS_ACTIVE,
+            isVerified=user.IS_VERIFIED,
             createdTs=user.CREATED_AT,
             modifiedTs=user.MODIFIED_AT
         )

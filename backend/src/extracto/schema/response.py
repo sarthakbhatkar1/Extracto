@@ -34,10 +34,11 @@ class TaskResponse(BaseModel):
 
 class UserResponse(BaseModel):
     userId: UUID
-    fullName: str
+    firstName: str
+    lastName: str
     email: str
     role: str
-    isActive: bool
-    isVerified: bool
+    isActive: bool = False
+    isVerified: bool = False
     createdTs: datetime
     modifiedTs: datetime

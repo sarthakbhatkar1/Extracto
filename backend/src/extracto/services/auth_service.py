@@ -8,14 +8,15 @@ from extracto.db.model import User, RefreshToken
 from extracto.logger.log_utils import Logger
 from extracto.schema import schemas
 from extracto.utils import auth_utils
+from extracto.utils.util import get_current_datetime
+
 
 logger = Logger()
 
 
 class AuthService:
     def __init__(self):
-        self.created_at = datetime.utcnow()
-        self.modified_at = datetime.utcnow()
+        self.timestamp = get_current_datetime()
         self.cookie_name = os.getenv("COOKIE_NAME", "refresh_token")
 
     def set_refresh_cookie(self, response: Response, refresh_token: str):
@@ -45,7 +46,8 @@ class AuthService:
                 ROLE=payload.role,
                 HASHED_PASSWORD=hashed_password,
                 IS_ACTIVE=True,
-                CREATED_AT=self.created_at,
+                CREATED_AT=self.timestamp,
+                MODIFIED_AT=self.timestamp
             )
             session.add(user)
             session.commit()
@@ -77,7 +79,8 @@ class AuthService:
                     "role": user.ROLE,
                     "firstName": user.FIRST_NAME,
                     "lastName": user.LAST_NAME,
-                    "created_at": user.CREATED_AT
+                    "created_at": user.CREATED_AT,
+                    "modified_at": user.MODIFIED_AT
                   }
             }
         except Exception as e:
@@ -120,7 +123,8 @@ class AuthService:
                     "role": user.ROLE,
                     "firstName": user.FIRST_NAME,
                     "lastName": user.LAST_NAME,
-                    "created_at": user.CREATED_AT
+                    "created_at": user.CREATED_AT,
+                    "modified_at": user.MODIFIED_AT
                 }
             }
         except Exception as e:
@@ -220,7 +224,8 @@ class AuthService:
                     "role": user.ROLE,
                     "firstName": user.FIRST_NAME,
                     "lastName": user.LAST_NAME,
-                    "created_at": user.CREATED_AT
+                    "created_at": user.CREATED_AT,
+                    "modified_at": user.MODIFIED_AT
                 }
             }
         except Exception as e:
