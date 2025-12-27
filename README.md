@@ -90,6 +90,67 @@ Extracto follows a **microservice-oriented, async processing architecture**.
 
 ---
 
+## 🏗️ System Architecture
+
+```mermaid
+flowchart LR
+    U[User / Client] -->|REST API| API[FastAPI Backend]
+
+    API -->|Create Task| DB[(PostgreSQL)]
+    API -->|Read WorkflowConfig| DB
+
+    %% Daemon
+    D[Task Poller]
+    W[Workflow Executor]
+
+    DB -->|Queued Tasks| D
+    D --> W
+
+    %% Workflow Nodes (declared first)
+    I[Ingestion]
+    P[Parsing - Docling]
+    E[Extraction - LLM]
+    S[Summarization - LLM]
+
+    W --> I
+    I --> P
+    P --> E
+    E --> S
+
+    %% LLM Layer
+    LC[LangChain Client]
+    LLMs[LLM Providers]
+
+    E --> LC
+    S --> LC
+    LC --> LLMs
+
+    S --> DB
+    DB --> API
+    API --> U
+
+    %% Grouping (visual only)
+    subgraph Worker["Daemon"]
+        D
+        W
+    end
+
+    subgraph Workflow["Dynamic Workflow Pipeline"]
+        I
+        P
+        E
+        S
+    end
+
+    subgraph LLM["LLM Orchestration"]
+        LC
+        LLMs
+    end
+
+```
+
+---
+
 ## 🗂️ Task Execution Model
 
 Each task maintains a **global status** and **stage-level metadata**:
