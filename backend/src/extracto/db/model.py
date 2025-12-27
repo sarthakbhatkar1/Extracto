@@ -83,7 +83,7 @@ class Task(Base):
 
     ID = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     DOCUMENT_IDS = Column(JSONB, default=[])
-    STATUS = Column(String(4095), nullable=False)
+    STATUS = Column(JSONB, nullable=False)
     AI_RESULT = Column(JSONB, default={})
     OUTPUT = Column(JSONB, default={})
     CREATED_AT = Column(DateTime(timezone=True))
@@ -115,15 +115,15 @@ def setup_database(connection_string):
     return engine
 
 
-# # Usage Example
-# if __name__ == "__main__":
-#     # To re-create database
-#     os.getenv('CONF_PATH', r"D:\Projects\career\Extracto\backend\resource")
-#     os.getenv('ENV', "PREDEV")
+# Usage Example
+if __name__ == "__main__":
+    # To re-create database
+    os.getenv('CONF_PATH', r"D:\Projects\career\Extracto\backend\resource")
+    os.getenv('ENV', "PREDEV")
 
-#     db_connection = DBConnection()
-#     engine = db_connection._create_engine()
-#     Base.metadata.drop_all(engine)
-#     Base.metadata.create_all(engine)
-#     print(f"Database created successfully.")
-#     pass
+    db_connection = DBConnection()
+    engine = db_connection._create_engine()
+    Base.metadata.drop_all(engine)
+    Base.metadata.create_all(engine)
+    print(f"Database created successfully.")
+    pass

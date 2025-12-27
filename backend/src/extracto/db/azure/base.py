@@ -31,9 +31,8 @@ class DBConnection:
         self.kwargs = kwargs
 
         self.connection_string = (
-                f"{self.db_type}://{self.username}:{self.password}@{self.host}:{self.port}/{self.database}?sslmode=disable"
+                f"{self.db_type}://{self.username}:{self.password}@{self.host}:{self.port}/{self.database}"
             )
-        print(f"self.connection_string: {self.connection_string}")
         self.engine = None
         self.Session = None
 

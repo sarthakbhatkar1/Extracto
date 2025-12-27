@@ -5,10 +5,6 @@ import os
 import io
 
 
-os.environ['ENV'] = 'PREDEV'
-os.environ['CONF_PATH'] = r'D:\Projects\career\Extracto\backend\resource'
-
-
 class S3FileManager:
     def __init__(self, config_store=None):
         """
@@ -188,24 +184,24 @@ class S3FileManager:
             raise Exception(f"Failed to delete {remote_path} from S3 bucket {self.bucket}: {str(e)}")
 
 
-# Example usage (for testing, can be removed in production)
-if __name__ == "__main__":
-    manager = S3FileManager()
+# # Example usage (for testing, can be removed in production)
+# if __name__ == "__main__":
+#     manager = S3FileManager()
 
-    # Create: Upload file data
-    file_content = b"Test content"  # Example bytes data
-    manager.create(file_content, "extracto/test.txt")
+#     # Create: Upload file data
+#     file_content = b"Test content"  # Example bytes data
+#     manager.create(file_content, "extracto/test.txt")
 
-    # Read: List files in Extracto folder
-    files = manager.read(remote_path="extracto/")
-    print("Files in Extracto:", files)
+#     # Read: List files in Extracto folder
+#     files = manager.read(remote_path="extracto/")
+#     print("Files in Extracto:", files)
 
-    # Read: Download a.py file
-    content = manager.read("extracto/test.txt")
-    print("File content:", content.decode())
+#     # Read: Download a.py file
+#     content = manager.read("extracto/test.txt")
+#     print("File content:", content.decode())
 
-    # Update: Rename a.py file
-    manager.update("extracto/test.txt", new_name="test_updated.txt")
+#     # Update: Rename a.py file
+#     manager.update("extracto/test.txt", new_name="test_updated.txt")
 
-    # Delete: Remove a.py file
-    # manager.delete("extracto/test_updated.txt")
+#     # Delete: Remove a.py file
+#     # manager.delete("extracto/test_updated.txt")

@@ -58,4 +58,3 @@ def get_unique_number():
 def get_current_datetime():
     UTC_ISO_TIME_FORMAT = "%Y-%m-%dT%H:%M:%S.000Z"
     return datetime.utcnow().strftime(UTC_ISO_TIME_FORMAT)
-

@@ -83,7 +83,7 @@ class Task(Base):
 
     ID = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     DOCUMENT_IDS = Column(JSONB, default=[])
-    STATUS = Column(String(4095), nullable=False)
+    STATUS = Column(JSONB, nullable=False)
     AI_RESULT = Column(JSONB, default={})
     OUTPUT = Column(JSONB, default={})
     CREATED_AT = Column(DateTime(timezone=True))
@@ -114,19 +114,6 @@ def setup_database(connection_string):
     Base.metadata.create_all(engine)
     return engine
 
-
-# Usage Example
-# if __name__ == "__main__":
-#     connection_string = "sqlite:///example.db"  # Example with SQLite; replace with your DB URI
-#     engine = setup_database(connection_string)
-#
-#     # Create a.py session
-#     Session = sessionmaker(bind=engine)
-#     session = Session()
-#
-#     # db_connection = DBConnection(**db_config)
-#
-#     Base.metadata.create_all(engine)
 
 # Usage Example
 if __name__ == "__main__":
