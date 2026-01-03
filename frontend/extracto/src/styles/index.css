@@ -1,0 +1,89 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ---------- Base ---------- */
+body {
+  @apply bg-slate-950 text-slate-100 antialiased;
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+}
+
+/* ---------- Glass Surfaces ---------- */
+.glass {
+  @apply bg-white/10 backdrop-blur-xl border border-white/10 rounded-xl;
+}
+
+/* ---------- Inputs ---------- */
+.input {
+  @apply w-full px-3 py-2 rounded-md
+         bg-black/40 border border-white/10
+         text-sm text-white
+         placeholder:text-slate-400
+         focus:outline-none focus:ring-2 focus:ring-blue-500/40
+         transition;
+}
+
+/* ---------- Buttons ---------- */
+.btn-primary {
+  @apply inline-flex items-center justify-center gap-2
+         bg-blue-600 hover:bg-blue-500
+         px-4 py-2 rounded-md
+         text-sm font-medium
+         transition active:scale-[0.98]
+         disabled:opacity-50 disabled:cursor-not-allowed;
+}
+
+.btn-secondary {
+  @apply inline-flex items-center justify-center gap-2
+         border border-white/15
+         px-4 py-2 rounded-md
+         text-sm text-slate-300
+         hover:bg-white/10
+         transition;
+}
+
+/* ---------- Table ---------- */
+.table {
+  @apply w-full text-sm;
+}
+
+.table thead {
+  @apply text-slate-400 border-b border-white/10;
+}
+
+.table th {
+  @apply px-4 py-3 font-medium text-left;
+}
+
+.table td {
+  @apply px-4 py-3;
+}
+
+.table-row {
+  @apply border-b border-white/5
+         hover:bg-white/5
+         transition;
+}
+
+/* ---------- Badges ---------- */
+.badge {
+  @apply inline-flex items-center px-2 py-0.5
+         rounded text-xs font-medium;
+}
+
+.badge-green {
+  @apply bg-green-500/20 text-green-400;
+}
+
+.badge-yellow {
+  @apply bg-yellow-500/20 text-yellow-400;
+}
+
+/* ---------- Section headers ---------- */
+.section-title {
+  @apply text-lg font-semibold;
+}
+
+.section-subtitle {
+  @apply text-sm text-slate-400;
+}
