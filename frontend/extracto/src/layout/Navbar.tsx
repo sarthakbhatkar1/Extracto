@@ -14,7 +14,8 @@ export default function Navbar() {
 
         <button
           onClick={logout}
-          className="text-xs text-red-400 hover:text-red-500"
+          // className="btn btn-danger text-xs  text-red-400 hover:text-red-500"
+          className="btn-secondary text-xs  text-red-400 hover:text-red-500"
         >
           Logout
         </button>
