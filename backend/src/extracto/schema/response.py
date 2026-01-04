@@ -1,6 +1,6 @@
 from datetime import datetime
 from pydantic import BaseModel
-from typing import Any
+from typing import Any, List
 from uuid import UUID
 
 
@@ -26,6 +26,7 @@ class ProjectResponse(BaseModel):
 
 class TaskResponse(BaseModel):
     taskId: UUID
+    documentIds: List
     status: str
     output: Any
     createdTs: datetime

@@ -107,6 +107,7 @@ class TaskService:
     def response(self, task: Task):
         return TaskResponse(
             taskId=task.ID,
+            documentIds=task.DOCUMENT_IDS,
             status=task.STATUS,
             output=task.OUTPUT,
             createdTs=task.CREATED_AT,
