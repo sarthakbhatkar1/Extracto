@@ -9,6 +9,7 @@ import Projects from "./pages/Projects";
 import ProjectDocuments from "./pages/ProjectDocuments";
 import DocumentViewer from "./pages/DocumentViewer";
 import Workflows from "./pages/Workflows";
+import Settings from "./pages/Settings";
 
 export default function App() {
   return (
@@ -26,6 +27,7 @@ export default function App() {
             <Route path="/projects/:projectId" element={<ProjectDocuments />} />
             <Route path="/documents/:documentId" element={<DocumentViewer />} />
             <Route path="/workflows" element={<Workflows />} />
+            <Route path="/settings" element={<Settings />} />
           </Route>
         </Route>
       </Routes>

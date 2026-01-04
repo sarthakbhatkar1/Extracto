@@ -6,6 +6,7 @@ interface User {
   role: string;
   firstName: string;
   lastName: string;
+  created_at: string;
 }
 
 interface AuthContextType {

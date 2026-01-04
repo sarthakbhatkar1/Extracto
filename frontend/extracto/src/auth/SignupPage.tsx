@@ -14,7 +14,7 @@ export default function SignupPage() {
 
   const handleSignup = async () => {
     if (!firstName || !lastName || !email || !password) {
-      toast.error("Please fill all fields");
+      toast.error("All fields are required");
       return;
     }
 
@@ -29,7 +29,7 @@ export default function SignupPage() {
         role: "User",
       });
 
-      toast.success("Account created successfully");
+      toast.success("Account created. Please sign in.");
       navigate("/login");
     } catch {
       toast.error("Signup failed");
@@ -39,15 +39,15 @@ export default function SignupPage() {
   };
 
   return (
-    <div className="h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 to-slate-800">
-      <div className="glass w-full max-w-md p-8 space-y-6">
+    <div className="min-h-screen flex items-center justify-center bg-slate-950">
+      <div className="w-full max-w-md glass p-8 space-y-6">
         {/* Header */}
-        <div className="text-center">
+        <div className="space-y-1">
           <h1 className="text-2xl font-semibold">
             Create your Extracto workspace
           </h1>
-          <p className="text-sm text-gray-400 mt-1">
-            Start organizing and processing documents intelligently.
+          <p className="text-sm text-slate-400">
+            Start processing documents with structured workflows.
           </p>
         </div>
 
@@ -88,18 +88,18 @@ export default function SignupPage() {
         <button
           onClick={handleSignup}
           disabled={loading}
-          className="btn-primary w-full disabled:opacity-50"
+          className="btn-primary w-full"
         >
-          {loading ? "Creating account..." : "Create account"}
+          {loading ? "Creating account…" : "Create account"}
         </button>
 
         {/* Footer */}
-        <p className="text-xs text-gray-400 text-center">
+        <div className="text-sm text-slate-400 text-center">
           Already have an account?{" "}
           <Link to="/login" className="text-blue-400 hover:underline">
             Sign in
           </Link>
-        </p>
+        </div>
       </div>
     </div>
   );

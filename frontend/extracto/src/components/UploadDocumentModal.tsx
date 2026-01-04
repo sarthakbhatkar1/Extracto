@@ -1,11 +1,14 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
+
 import { DocumentAPI } from "../api/document.api";
+import { TaskAPI } from "../api/task.api";
 
 interface Props {
   open: boolean;
   projectId: string;
   existingFolders: string[];
+  defaultFolder?: string | null;
   onClose: () => void;
   onSuccess: () => void;
 }
@@ -14,6 +17,7 @@ export default function UploadDocumentModal({
   open,
   projectId,
   existingFolders,
+  defaultFolder,
   onClose,
   onSuccess,
 }: Props) {
@@ -21,6 +25,14 @@ export default function UploadDocumentModal({
   const [folder, setFolder] = useState("");
   const [newFolder, setNewFolder] = useState("");
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (open) {
+      setFolder(defaultFolder || "");
+      setNewFolder("");
+      setFile(null);
+    }
+  }, [open, defaultFolder]);
 
   if (!open) return null;
 
@@ -32,23 +44,30 @@ export default function UploadDocumentModal({
 
     const folderName = newFolder || folder;
     if (!folderName) {
-      toast.error("Please select or enter a folder");
+      toast.error("Please select or create a folder");
       return;
     }
 
     const formData = new FormData();
     formData.append("projectId", projectId);
     formData.append("folderName", folderName);
-    formData.append("documentType", "PDF");
+    formData.append("documentType", "pdf");
     formData.append("document", file);
 
     try {
       setLoading(true);
-      await DocumentAPI.upload(formData);
-      toast.success("Document uploaded successfully");
+
+      const res = await DocumentAPI.upload(formData);
+      const documentId = res.data.result.documentId;
+
+      // 🔴 AUTO CREATE TASK
+      await TaskAPI.create([documentId]);
+
+      toast.success("Document uploaded and task created");
       onSuccess();
       onClose();
-    } catch {
+    } catch (err) {
+      console.error(err);
       toast.error("Upload failed");
     } finally {
       setLoading(false);
@@ -62,7 +81,7 @@ export default function UploadDocumentModal({
 
         {/* File */}
         <div>
-          <label className="text-sm text-gray-400">Document (PDF)</label>
+          <label className="text-sm text-gray-400">Document</label>
           <input
             type="file"
             accept="application/pdf"
@@ -71,7 +90,7 @@ export default function UploadDocumentModal({
           />
         </div>
 
-        {/* Folder selection */}
+        {/* Folder */}
         <div>
           <label className="text-sm text-gray-400">Folder</label>
 
@@ -79,6 +98,7 @@ export default function UploadDocumentModal({
             className="input mt-2"
             value={folder}
             onChange={(e) => setFolder(e.target.value)}
+            disabled={!!newFolder}
           >
             <option value="">Select existing folder</option>
             {existingFolders.map((f) => (
@@ -93,6 +113,7 @@ export default function UploadDocumentModal({
             placeholder="Or create new folder"
             value={newFolder}
             onChange={(e) => setNewFolder(e.target.value)}
+            disabled={!!folder}
           />
         </div>
 
